@@ -36,5 +36,5 @@ public abstract class BaseEntity {
 
     // CAMBIO: De private a protected para acceso desde clases hijas
     @Column(name = "is_active", nullable = false)
-    protected Boolean isActive = true;  
+    protected Boolean isActive = true;
 }
