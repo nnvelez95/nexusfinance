@@ -1,16 +1,20 @@
-# IDEs
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# IDE
 .idea/
-.vscode/
 *.iml
-*.swp
-
-# OS
+.vscode/
 .DS_Store
-Thumbs.db
-
-# Env files
-.env
-.env.local
 
 # Logs
 *.log
+
+# Docker volumes
+postgres_data/
+redis_data/
