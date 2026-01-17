@@ -1,5 +1,7 @@
 # 💼 NexusFinance Backend
 
+# 💼 NexusFinance Backend
+
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -23,6 +25,16 @@
 ## 📖 Descripción
 
 NexusFinance es una plataforma backend de micro-inversiones construida siguiendo los principios de **Clean Architecture**, **Domain-Driven Design (DDD)** y **SOLID**. El proyecto está diseñado con enfoque en escalabilidad, mantenibilidad y seguridad empresarial.
+
+### 🎯 Última Actualización: Fase 4 Completada
+
+**Nuevas funcionalidades implementadas:**
+- ✨ CRUD completo de productos de inversión
+- 🔓 API pública para consultar productos disponibles
+- 🔒 API administrativa para gestión de productos
+- 📊 Cálculo automático de progreso de inversión
+- 🎚️ Filtros por estado y nivel de riesgo
+- ✅ Validaciones de negocio robustas
 
 ### ✨ Características Principales
 
@@ -116,13 +128,24 @@ backend/
 │   │
 │   ├── application/
 │   │   ├── dto/
-│   │   │   ├── AuthResponse.java
-│   │   │   ├── LoginRequest.java
-│   │   │   └── RegisterRequest.java
+│   │   │   ├── auth/
+│   │   │   │   ├── AuthResponse.java
+│   │   │   │   ├── LoginRequest.java
+│   │   │   │   └── RegisterRequest.java
+│   │   │   └── product/
+│   │   │       ├── CreateProductRequest.java
+│   │   │       ├── UpdateProductRequest.java
+│   │   │       └── ProductResponse.java
 │   │   ├── port/in/
-│   │   │   └── AuthenticationUseCase.java
+│   │   │   ├── AuthenticationUseCase.java
+│   │   │   └── product/
+│   │   │       ├── CreateProductUseCase.java
+│   │   │       ├── GetProductUseCase.java
+│   │   │       ├── UpdateProductUseCase.java
+│   │   │       └── DeleteProductUseCase.java
 │   │   └── service/
-│   │       └── AuthenticationService.java
+│   │       ├── AuthenticationService.java
+│   │       └── ProductService.java
 │   │
 │   ├── domain/
 │   │   ├── exception/
@@ -130,9 +153,13 @@ backend/
 │   │   ├── model/
 │   │   │   ├── BaseEntity.java
 │   │   │   ├── User.java
-│   │   │   └── UserRole.java
+│   │   │   ├── UserRole.java
+│   │   │   ├── InvestmentProduct.java
+│   │   │   ├── ProductStatus.java
+│   │   │   └── RiskLevel.java
 │   │   └── repository/
-│   │       └── UserRepository.java
+│   │       ├── UserRepository.java
+│   │       └── InvestmentProductRepository.java
 │   │
 │   └── infrastructure/
 │       ├── config/
@@ -140,10 +167,14 @@ backend/
 │       │   └── SecurityConfig.java
 │       ├── persistence/
 │       │   ├── JpaUserRepository.java
-│       │   └── UserRepositoryAdapter.java
+│       │   ├── UserRepositoryAdapter.java
+│       │   ├── JpaInvestmentProductRepository.java
+│       │   └── InvestmentProductRepositoryAdapter.java
 │       ├── rest/
 │       │   ├── AuthController.java
-│       │   └── HealthController.java
+│       │   ├── HealthController.java
+│       │   ├── PublicProductController.java
+│       │   └── AdminProductController.java
 │       └── security/
 │           ├── CustomUserDetailsService.java
 │           ├── JwtAuthenticationFilter.java
@@ -212,7 +243,28 @@ cd backend
 
 ## 📡 API Endpoints
 
-### Health Check
+### 📋 Resumen de Endpoints
+
+| Categoría | Método | Endpoint | Autenticación | Descripción |
+|-----------|--------|----------|---------------|-------------|
+| **Health** | GET | `/health` | ❌ No | Health check del servicio |
+| **Auth** | POST | `/api/auth/register` | ❌ No | Registrar nuevo usuario |
+| **Auth** | POST | `/api/auth/login` | ❌ No | Login y obtención de JWT |
+| **Productos (Público)** | GET | `/api/public/products/available` | ❌ No | Listar productos disponibles |
+| **Productos (Público)** | GET | `/api/public/products/{id}` | ❌ No | Obtener producto por ID |
+| **Productos (Público)** | GET | `/api/public/products/risk/{level}` | ❌ No | Filtrar por nivel de riesgo |
+| **Productos (Admin)** | POST | `/api/admin/products` | ✅ Sí | Crear nuevo producto |
+| **Productos (Admin)** | GET | `/api/admin/products` | ✅ Sí | Listar todos los productos |
+| **Productos (Admin)** | GET | `/api/admin/products/{id}` | ✅ Sí | Obtener producto por ID |
+| **Productos (Admin)** | GET | `/api/admin/products/status/{status}` | ✅ Sí | Filtrar por estado |
+| **Productos (Admin)** | PUT | `/api/admin/products/{id}` | ✅ Sí | Actualizar producto |
+| **Productos (Admin)** | DELETE | `/api/admin/products/{id}` | ✅ Sí | Eliminar producto |
+
+---
+
+### 🔓 Endpoints Públicos (sin autenticación)
+
+#### Health Check
 
 ```http
 GET /health
@@ -290,13 +342,238 @@ Content-Type: application/json
 
 ---
 
-#### Usar el Token JWT
+### Productos de Inversión (Público)
 
-Para endpoints protegidos, incluye el token en el header `Authorization`:
+#### Listar Productos Disponibles
 
 ```http
-GET /api/protected-endpoint
+GET /api/public/products/available
+```
+
+**Respuesta:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Fondo de Renta Fija",
+    "description": "Inversión segura en bonos gubernamentales",
+    "status": "ACTIVE",
+    "riskLevel": "LOW",
+    "annualReturn": 8.5,
+    "minimumInvestment": 1000.00,
+    "targetAmount": 100000.00,
+    "currentAmount": 45000.00,
+    "progressPercentage": 45.0,
+    "durationDays": 365,
+    "closingDate": "2026-12-31",
+    "availableForInvestment": true
+  }
+]
+```
+
+#### Obtener Producto por ID
+
+```http
+GET /api/public/products/{id}
+```
+
+#### Filtrar por Nivel de Riesgo
+
+```http
+GET /api/public/products/risk/{riskLevel}
+```
+
+**Niveles de riesgo válidos:** `LOW`, `MEDIUM`, `HIGH`
+
+---
+
+### 🔒 Endpoints Protegidos (requieren JWT)
+
+**Header requerido:**
+```http
 Authorization: Bearer eyJhbGciOiJIUzM4NCJ9...
+```
+
+---
+
+### Productos de Inversión (Admin)
+
+#### Crear Producto
+
+```http
+POST /api/admin/products
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+```
+
+**Payload:**
+```json
+{
+  "name": "Fondo de Renta Fija",
+  "description": "Inversión segura en bonos gubernamentales",
+  "riskLevel": "LOW",
+  "annualReturn": 8.5,
+  "minimumInvestment": 1000,
+  "targetAmount": 100000,
+  "durationDays": 365,
+  "closingDate": "2026-12-31"
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "id": 1,
+  "name": "Fondo de Renta Fija",
+  "description": "Inversión segura en bonos gubernamentales",
+  "status": "ACTIVE",
+  "riskLevel": "LOW",
+  "annualReturn": 8.5,
+  "minimumInvestment": 1000.00,
+  "targetAmount": 100000.00,
+  "currentAmount": 0.00,
+  "progressPercentage": 0.0,
+  "durationDays": 365,
+  "closingDate": "2026-12-31",
+  "availableForInvestment": true
+}
+```
+
+#### Listar Todos los Productos
+
+```http
+GET /api/admin/products
+Authorization: Bearer <TOKEN>
+```
+
+#### Obtener Producto por ID
+
+```http
+GET /api/admin/products/{id}
+Authorization: Bearer <TOKEN>
+```
+
+#### Filtrar por Estado
+
+```http
+GET /api/admin/products/status/{status}
+Authorization: Bearer <TOKEN>
+```
+
+**Estados válidos:** `ACTIVE`, `INACTIVE`, `COMPLETED`, `CANCELLED`
+
+#### Actualizar Producto
+
+```http
+PUT /api/admin/products/{id}
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+```
+
+**Payload:**
+```json
+{
+  "name": "Fondo de Renta Fija Plus",
+  "description": "Inversión segura en bonos gubernamentales con mayor rendimiento",
+  "riskLevel": "LOW",
+  "annualReturn": 9.0,
+  "minimumInvestment": 1500,
+  "targetAmount": 150000,
+  "durationDays": 365,
+  "closingDate": "2026-12-31"
+}
+```
+
+#### Eliminar Producto
+
+```http
+DELETE /api/admin/products/{id}
+Authorization: Bearer <TOKEN>
+```
+
+**Respuesta (204 No Content)**
+
+---
+
+## 📝 Ejemplos de Uso con cURL
+
+### 1. Registrar Usuario
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Juan",
+    "lastName": "Pérez",
+    "email": "juan@example.com",
+    "password": "password123"
+  }'
+```
+
+### 2. Login y Obtener Token
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "juan@example.com",
+    "password": "password123"
+  }'
+```
+
+### 3. Crear Producto de Inversión
+
+```bash
+curl -X POST http://localhost:8080/api/admin/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{
+    "name": "Fondo de Renta Fija",
+    "description": "Inversión segura en bonos gubernamentales",
+    "riskLevel": "LOW",
+    "annualReturn": 8.5,
+    "minimumInvestment": 1000,
+    "targetAmount": 100000,
+    "durationDays": 365,
+    "closingDate": "2026-12-31"
+  }'
+```
+
+### 4. Listar Productos Disponibles (sin token)
+
+```bash
+curl http://localhost:8080/api/public/products/available
+```
+
+### 5. Filtrar por Nivel de Riesgo
+
+```bash
+curl http://localhost:8080/api/public/products/risk/LOW
+```
+
+### 6. Actualizar Producto
+
+```bash
+curl -X PUT http://localhost:8080/api/admin/products/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{
+    "name": "Fondo de Renta Fija Plus",
+    "description": "Inversión actualizada",
+    "riskLevel": "LOW",
+    "annualReturn": 9.0,
+    "minimumInvestment": 1500,
+    "targetAmount": 150000,
+    "durationDays": 365,
+    "closingDate": "2026-12-31"
+  }'
+```
+
+### 7. Eliminar Producto
+
+```bash
+curl -X DELETE http://localhost:8080/api/admin/products/1 \
+  -H "Authorization: Bearer <TOKEN>"
 ```
 
 ---
@@ -323,6 +600,76 @@ CREATE TABLE users (
 CREATE UNIQUE INDEX idx_user_email ON users(email);
 ```
 
+### Tabla `investment_products`
+
+```sql
+CREATE TABLE investment_products (
+    id BIGINT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+    is_active BOOLEAN NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'INACTIVE', 'COMPLETED', 'CANCELLED')),
+    risk_level VARCHAR(20) NOT NULL CHECK (risk_level IN ('LOW', 'MEDIUM', 'HIGH')),
+    annual_return NUMERIC(5,2) NOT NULL,
+    minimum_investment NUMERIC(15,2) NOT NULL,
+    target_amount NUMERIC(15,2) NOT NULL,
+    current_amount NUMERIC(15,2) NOT NULL DEFAULT 0,
+    duration_days INTEGER NOT NULL,
+    closing_date DATE NOT NULL
+);
+
+CREATE INDEX idx_product_status ON investment_products(status);
+CREATE INDEX idx_product_risk_level ON investment_products(risk_level);
+CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
+```
+
+### Enums del Sistema
+
+#### ProductStatus
+- `ACTIVE` - Producto activo y disponible para inversión
+- `INACTIVE` - Producto temporalmente inactivo
+- `COMPLETED` - Producto que alcanzó su objetivo
+- `CANCELLED` - Producto cancelado
+
+#### RiskLevel
+- `LOW` - Bajo riesgo (≤ 10% retorno anual)
+- `MEDIUM` - Riesgo medio (11-20% retorno anual)
+- `HIGH` - Alto riesgo (> 20% retorno anual)
+
+#### UserRole
+- `INVESTOR` - Usuario inversor estándar
+- `ADMIN` - Administrador del sistema
+- `ANALYST` - Analista financiero
+
+---
+
+## ⚙️ Lógica de Negocio
+
+### Validaciones de Productos de Inversión
+
+#### En el Dominio (`InvestmentProduct`)
+- **`isAvailableForInvestment()`**: Verifica si un producto está disponible para recibir inversiones
+  - Estado debe ser `ACTIVE`
+  - `currentAmount` < `targetAmount`
+  - Fecha de cierre no debe haber pasado
+
+- **`getProgressPercentage()`**: Calcula el porcentaje de completitud del producto
+  - Retorna: `(currentAmount / targetAmount) * 100`
+
+#### Validaciones en DTOs (Bean Validation)
+
+**CreateProductRequest / UpdateProductRequest:**
+- `name`: Requerido, entre 3-200 caracteres
+- `description`: Requerido, entre 10-1000 caracteres
+- `riskLevel`: Debe ser LOW, MEDIUM o HIGH
+- `annualReturn`: Debe ser > 0 y ≤ 100
+- `minimumInvestment`: Debe ser ≥ 100
+- `targetAmount`: Debe ser ≥ 1000
+- `durationDays`: Debe ser ≥ 30
+- `closingDate`: Debe ser fecha futura
+
 ---
 
 ## 🔒 Seguridad
@@ -333,8 +680,10 @@ CREATE UNIQUE INDEX idx_user_email ON users(email);
 - ✅ Contraseñas hasheadas con BCrypt (factor 10)
 - ✅ CSRF deshabilitado (API REST)
 - ✅ Session management: STATELESS
-- ✅ Endpoints públicos: `/api/auth/**`, `/health`
+- ✅ Endpoints públicos: `/api/auth/**`, `/api/public/**`, `/health`
+- ✅ Endpoints protegidos: `/api/admin/**`
 - ✅ Validación de entrada con Bean Validation
+- ✅ Control de acceso basado en roles (RBAC)
 
 ### Buenas Prácticas
 
@@ -369,15 +718,20 @@ CREATE UNIQUE INDEX idx_user_email ON users(email);
 - SecurityConfig (Spring Security 6)
 - Password encoding con BCrypt
 
+#### ✅ Fase 4: CRUD de Productos de Inversión
+- Entidad `InvestmentProduct` con lógica de dominio
+- Enums: `ProductStatus`, `RiskLevel`
+- Repositorios y adaptadores
+- DTOs: `CreateProductRequest`, `UpdateProductRequest`, `ProductResponse`
+- Casos de uso completos (CRUD + filtros)
+- Endpoints públicos (`/api/public/products/*`)
+- Endpoints de administración (`/api/admin/products/*`)
+- Validaciones de negocio
+- Métodos de dominio: `isAvailableForInvestment()`, `getProgressPercentage()`
+
 ---
 
 ## 🚧 Roadmap
-
-### Fase 4: CRUD de Productos de Inversión
-- Entidad `InvestmentProduct`
-- CRUD completo (Admin)
-- Endpoints públicos para listar productos
-- Validaciones de negocio
 
 ### Fase 5: Sistema de Inversiones
 - Entidad `Investment`
