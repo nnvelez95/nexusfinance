@@ -34,6 +34,7 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // CAMBIO: De private a protected para acceso desde clases hijas
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+    protected Boolean isActive = true;  
 }

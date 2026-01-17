@@ -1,0 +1,10 @@
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/NexusFinanceApplication.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/domain/exception/DomainException.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/domain/model/BaseEntity.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/domain/model/User.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/domain/model/UserRole.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/domain/repository/UserRepository.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/infrastructure/config/RedisConfig.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/infrastructure/persistence/JpaUserRepository.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/infrastructure/persistence/UserRepositoryAdapter.java
+/Users/nnvelez/Documents/Programacíon/nexusfinance/backend/src/main/java/com/nexusfinance/infrastructure/rest/HealthController.java
