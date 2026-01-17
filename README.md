@@ -499,7 +499,7 @@ Este proyecto está bajo la Licencia MIT.
 
 ## 👨‍💻 Autor
 
-Desarrollado con ❤️ para la comunidad de desarrolladores Java/Spring Boot.
+Norberto Velez
 
 ---
 
