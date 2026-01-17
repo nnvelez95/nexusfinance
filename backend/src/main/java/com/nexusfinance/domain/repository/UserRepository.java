@@ -1,24 +1,13 @@
 package com.nexusfinance.domain.repository;
 
 import com.nexusfinance.domain.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/**
- * Puerto de salida (Output Port) para persistencia de usuarios.
- * Esta interfaz pertenece al DOMINIO (sin dependencias de Spring Data).
- *
- * La implementación JPA estará en infrastructure/persistence.
- */
-public interface UserRepository {
-
-    Optional<User> findById(Long id);
-
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-
-    User save(User user);
-
     boolean existsByEmail(String email);
-
-    void deleteById(Long id);
 }
