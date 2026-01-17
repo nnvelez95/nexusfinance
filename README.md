@@ -1,7 +1,5 @@
 # 💼 NexusFinance Backend
 
-# 💼 NexusFinance Backend
-
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -9,10 +7,11 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Phase_5_Completed-success?style=for-the-badge)
 
 **Plataforma de micro-inversiones con Clean Architecture**
 
-[Características](#-características) •
+[Características](#-características-principales) •
 [Arquitectura](#️-arquitectura) •
 [Instalación](#-instalación) •
 [API](#-api-endpoints) •
@@ -26,21 +25,24 @@
 
 NexusFinance es una plataforma backend de micro-inversiones construida siguiendo los principios de **Clean Architecture**, **Domain-Driven Design (DDD)** y **SOLID**. El proyecto está diseñado con enfoque en escalabilidad, mantenibilidad y seguridad empresarial.
 
-### 🎯 Última Actualización: Fase 4 Completada
+### 🎯 Última Actualización: Fase 5 Completada
 
-**Nuevas funcionalidades implementadas:**
-- ✨ CRUD completo de productos de inversión
-- 🔓 API pública para consultar productos disponibles
-- 🔒 API administrativa para gestión de productos
-- 📊 Cálculo automático de progreso de inversión
-- 🎚️ Filtros por estado y nivel de riesgo
-- ✅ Validaciones de negocio robustas
+**Sistema de Inversiones implementado:**
+- 💰 Lógica completa de inversiones (crear, consultar, cancelar)
+- 🔄 Gestión automática de balances de usuarios y productos
+- 📊 Cálculo de rendimientos esperados y proporcionales
+- ✅ Validaciones robustas de saldo y disponibilidad
+- 🎯 Actualización automática de estado de productos (SOLD_OUT)
+- 🔐 Endpoints protegidos con JWT
 
 ### ✨ Características Principales
 
 - ✅ **Clean Architecture** - Separación clara de responsabilidades en capas
 - ✅ **Autenticación JWT** - Sistema de seguridad stateless
 - ✅ **Domain-Driven Design** - Modelado basado en el dominio del negocio
+- ✅ **Sistema de Inversiones** - Lógica completa de inversiones con cálculo de rendimientos
+- ✅ **Gestión de Productos** - CRUD completo con validaciones de negocio
+- ✅ **Transacciones Atómicas** - Operaciones financieras seguras
 - ✅ **Docker Compose** - Despliegue simplificado con PostgreSQL y Redis
 - ✅ **Spring Security 6** - Protección robusta de endpoints
 - ✅ **Bean Validation** - Validación de datos de entrada
@@ -132,34 +134,48 @@ backend/
 │   │   │   │   ├── AuthResponse.java
 │   │   │   │   ├── LoginRequest.java
 │   │   │   │   └── RegisterRequest.java
-│   │   │   └── product/
-│   │   │       ├── CreateProductRequest.java
-│   │   │       ├── UpdateProductRequest.java
-│   │   │       └── ProductResponse.java
+│   │   │   ├── product/
+│   │   │   │   ├── CreateProductRequest.java
+│   │   │   │   ├── UpdateProductRequest.java
+│   │   │   │   └── ProductResponse.java
+│   │   │   └── investment/
+│   │   │       ├── CreateInvestmentRequest.java
+│   │   │       └── InvestmentResponse.java
 │   │   ├── port/in/
 │   │   │   ├── AuthenticationUseCase.java
-│   │   │   └── product/
-│   │   │       ├── CreateProductUseCase.java
-│   │   │       ├── GetProductUseCase.java
-│   │   │       ├── UpdateProductUseCase.java
-│   │   │       └── DeleteProductUseCase.java
+│   │   │   ├── product/
+│   │   │   │   ├── CreateProductUseCase.java
+│   │   │   │   ├── GetProductUseCase.java
+│   │   │   │   ├── UpdateProductUseCase.java
+│   │   │   │   └── DeleteProductUseCase.java
+│   │   │   └── investment/
+│   │   │       ├── CreateInvestmentUseCase.java
+│   │   │       ├── GetInvestmentUseCase.java
+│   │   │       └── CancelInvestmentUseCase.java
 │   │   └── service/
 │   │       ├── AuthenticationService.java
-│   │       └── ProductService.java
+│   │       ├── ProductService.java
+│   │       └── InvestmentService.java
 │   │
 │   ├── domain/
 │   │   ├── exception/
-│   │   │   └── DomainException.java
+│   │   │   ├── DomainException.java
+│   │   │   ├── InsufficientBalanceException.java
+│   │   │   ├── ProductNotAvailableException.java
+│   │   │   └── InvestmentNotCancellableException.java
 │   │   ├── model/
 │   │   │   ├── BaseEntity.java
 │   │   │   ├── User.java
 │   │   │   ├── UserRole.java
 │   │   │   ├── InvestmentProduct.java
 │   │   │   ├── ProductStatus.java
-│   │   │   └── RiskLevel.java
+│   │   │   ├── RiskLevel.java
+│   │   │   ├── Investment.java
+│   │   │   └── InvestmentStatus.java
 │   │   └── repository/
 │   │       ├── UserRepository.java
-│   │       └── InvestmentProductRepository.java
+│   │       ├── InvestmentProductRepository.java
+│   │       └── InvestmentRepository.java
 │   │
 │   └── infrastructure/
 │       ├── config/
@@ -169,12 +185,15 @@ backend/
 │       │   ├── JpaUserRepository.java
 │       │   ├── UserRepositoryAdapter.java
 │       │   ├── JpaInvestmentProductRepository.java
-│       │   └── InvestmentProductRepositoryAdapter.java
+│       │   ├── InvestmentProductRepositoryAdapter.java
+│       │   ├── JpaInvestmentRepository.java
+│       │   └── InvestmentRepositoryAdapter.java
 │       ├── rest/
 │       │   ├── AuthController.java
 │       │   ├── HealthController.java
 │       │   ├── PublicProductController.java
-│       │   └── AdminProductController.java
+│       │   ├── AdminProductController.java
+│       │   └── InvestmentController.java
 │       └── security/
 │           ├── CustomUserDetailsService.java
 │           ├── JwtAuthenticationFilter.java
@@ -259,6 +278,11 @@ cd backend
 | **Productos (Admin)** | GET | `/api/admin/products/status/{status}` | ✅ Sí | Filtrar por estado |
 | **Productos (Admin)** | PUT | `/api/admin/products/{id}` | ✅ Sí | Actualizar producto |
 | **Productos (Admin)** | DELETE | `/api/admin/products/{id}` | ✅ Sí | Eliminar producto |
+| **Inversiones** | POST | `/api/investments` | ✅ Sí | Crear nueva inversión |
+| **Inversiones** | GET | `/api/investments/{id}` | ✅ Sí | Obtener inversión por ID |
+| **Inversiones** | GET | `/api/investments/my-investments` | ✅ Sí | Listar mis inversiones |
+| **Inversiones** | GET | `/api/investments/my-investments/active` | ✅ Sí | Listar mis inversiones activas |
+| **Inversiones** | POST | `/api/investments/{id}/cancel` | ✅ Sí | Cancelar inversión |
 
 ---
 
@@ -495,6 +519,153 @@ Authorization: Bearer <TOKEN>
 
 ---
 
+### Inversiones (Usuario Autenticado)
+
+#### Crear Inversión
+
+```http
+POST /api/investments
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+```
+
+**Payload:**
+```json
+{
+  "productId": 1,
+  "amount": 10000
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "id": 1,
+  "userId": 1,
+  "userEmail": "juan@example.com",
+  "productId": 1,
+  "productName": "Fondo de Renta Fija",
+  "amount": 10000.00,
+  "expectedReturn": 232.88,
+  "actualReturn": null,
+  "totalAmount": 10232.88,
+  "status": "ACTIVE",
+  "startDate": "2026-01-17",
+  "maturityDate": "2027-01-17",
+  "completionDate": null,
+  "canBeCancelled": true,
+  "createdAt": "2026-01-17T09:00:00"
+}
+```
+
+**Validaciones:**
+- Usuario debe tener saldo suficiente
+- Producto debe estar disponible (ACTIVE y con cupo)
+- Monto debe cumplir el mínimo de inversión
+- Producto no debe estar vencido
+
+#### Obtener Inversión por ID
+
+```http
+GET /api/investments/{id}
+Authorization: Bearer <TOKEN>
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "id": 1,
+  "userId": 1,
+  "userEmail": "juan@example.com",
+  "productId": 1,
+  "productName": "Fondo de Renta Fija",
+  "amount": 10000.00,
+  "expectedReturn": 232.88,
+  "actualReturn": null,
+  "totalAmount": 10232.88,
+  "status": "ACTIVE",
+  "startDate": "2026-01-17",
+  "maturityDate": "2027-01-17",
+  "completionDate": null,
+  "canBeCancelled": true,
+  "createdAt": "2026-01-17T09:00:00"
+}
+```
+
+#### Listar Mis Inversiones
+
+```http
+GET /api/investments/my-investments
+Authorization: Bearer <TOKEN>
+```
+
+**Respuesta (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "userEmail": "juan@example.com",
+    "productId": 1,
+    "productName": "Fondo de Renta Fija",
+    "amount": 10000.00,
+    "expectedReturn": 232.88,
+    "actualReturn": null,
+    "totalAmount": 10232.88,
+    "status": "ACTIVE",
+    "startDate": "2026-01-17",
+    "maturityDate": "2027-01-17",
+    "completionDate": null,
+    "canBeCancelled": true,
+    "createdAt": "2026-01-17T09:00:00"
+  }
+]
+```
+
+#### Listar Mis Inversiones Activas
+
+```http
+GET /api/investments/my-investments/active
+Authorization: Bearer <TOKEN>
+```
+
+#### Cancelar Inversión
+
+```http
+POST /api/investments/{id}/cancel
+Authorization: Bearer <TOKEN>
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "id": 1,
+  "userId": 1,
+  "userEmail": "juan@example.com",
+  "productId": 1,
+  "productName": "Fondo de Renta Fija",
+  "amount": 10000.00,
+  "expectedReturn": 232.88,
+  "actualReturn": 116.44,
+  "totalAmount": 10116.44,
+  "status": "CANCELLED",
+  "startDate": "2026-01-17",
+  "maturityDate": "2027-01-17",
+  "completionDate": "2026-07-17",
+  "canBeCancelled": false,
+  "createdAt": "2026-01-17T09:00:00"
+}
+```
+
+**Lógica de cancelación:**
+- Solo inversiones ACTIVE pueden cancelarse
+- Se calcula rendimiento proporcional según días transcurridos
+- Se devuelve: capital + rendimiento proporcional
+- Se actualiza balance del usuario
+- Se actualiza currentAmount del producto
+
+---
+
 ## 📝 Ejemplos de Uso con cURL
 
 ### 1. Registrar Usuario
@@ -576,6 +747,89 @@ curl -X DELETE http://localhost:8080/api/admin/products/1 \
   -H "Authorization: Bearer <TOKEN>"
 ```
 
+### 8. Crear Inversión
+
+```bash
+curl -X POST http://localhost:8080/api/investments \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{
+    "productId": 1,
+    "amount": 10000
+  }'
+```
+
+### 9. Listar Mis Inversiones
+
+```bash
+curl http://localhost:8080/api/investments/my-investments \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 10. Listar Mis Inversiones Activas
+
+```bash
+curl http://localhost:8080/api/investments/my-investments/active \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 11. Cancelar Inversión
+
+```bash
+curl -X POST http://localhost:8080/api/investments/1/cancel \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+---
+
+## 🚀 Flujo Completo de Inversión
+
+### Ejemplo de caso de uso end-to-end:
+
+```bash
+# 1. Registrar usuario
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Juan",
+    "lastName": "Pérez",
+    "email": "juan@example.com",
+    "password": "password123"
+  }'
+
+# 2. Login y obtener token
+TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "juan@example.com",
+    "password": "password123"
+  }' | jq -r '.token')
+
+# 3. Dar balance inicial al usuario (temporal - vía DB)
+docker exec -it nexusfinance-postgres psql -U postgres -d nexusfinance_db \
+  -c "UPDATE users SET balance = 50000.00 WHERE email = 'juan@example.com';"
+
+# 4. Ver productos disponibles
+curl http://localhost:8080/api/public/products/available | jq
+
+# 5. Crear inversión
+curl -X POST http://localhost:8080/api/investments \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "productId": 1,
+    "amount": 10000
+  }' | jq
+
+# 6. Ver mis inversiones
+curl http://localhost:8080/api/investments/my-investments \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 7. (Opcional) Cancelar inversión después de un tiempo
+curl -X POST http://localhost:8080/api/investments/1/cancel \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
 ---
 
 ## 🗄️ Modelo de Datos
@@ -625,6 +879,33 @@ CREATE INDEX idx_product_risk_level ON investment_products(risk_level);
 CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
 ```
 
+### Tabla `investments`
+
+```sql
+CREATE TABLE investments (
+    id BIGINT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+    is_active BOOLEAN NOT NULL,
+    user_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    amount NUMERIC(15,2) NOT NULL,
+    expected_return NUMERIC(15,2) NOT NULL,
+    actual_return NUMERIC(15,2),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'COMPLETED', 'CANCELLED', 'EXPIRED')),
+    start_date DATE NOT NULL,
+    maturity_date DATE NOT NULL,
+    completion_date DATE,
+    CONSTRAINT fk_investment_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_investment_product FOREIGN KEY (product_id) REFERENCES investment_products(id)
+);
+
+CREATE INDEX idx_investment_user ON investments(user_id);
+CREATE INDEX idx_investment_product ON investments(product_id);
+CREATE INDEX idx_investment_status ON investments(status);
+CREATE INDEX idx_investment_maturity_date ON investments(maturity_date);
+```
+
 ### Enums del Sistema
 
 #### ProductStatus
@@ -642,6 +923,12 @@ CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
 - `INVESTOR` - Usuario inversor estándar
 - `ADMIN` - Administrador del sistema
 - `ANALYST` - Analista financiero
+
+#### InvestmentStatus
+- `ACTIVE` - Inversión activa y vigente
+- `COMPLETED` - Inversión que alcanzó su madurez
+- `CANCELLED` - Inversión cancelada antes de tiempo
+- `EXPIRED` - Inversión vencida sin completar
 
 ---
 
@@ -672,6 +959,74 @@ CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
 
 ---
 
+### Sistema de Inversiones
+
+#### Cálculo de Rendimientos
+
+**Rendimiento Esperado:**
+```
+expectedReturn = amount × (annualReturn / 365) × durationDays
+```
+
+**Ejemplo:**
+- Inversión: $10,000
+- Retorno anual: 8.5%
+- Duración: 365 días
+- Rendimiento: $10,000 × (8.5 / 365) × 365 = $850
+
+**Rendimiento Proporcional (al cancelar):**
+```
+proportionalReturn = expectedReturn × (daysElapsed / totalDurationDays)
+```
+
+**Ejemplo de cancelación:**
+- Rendimiento esperado: $850
+- Días transcurridos: 180 de 365
+- Rendimiento proporcional: $850 × (180 / 365) = $419.18
+
+#### Métodos del Dominio (`Investment`)
+
+- **`calculateExpectedReturn()`**: Calcula el rendimiento esperado al vencimiento
+- **`calculateProportionalReturn()`**: Calcula rendimiento proporcional según días transcurridos
+- **`canBeCancelled()`**: Verifica si la inversión puede ser cancelada (solo ACTIVE)
+
+#### Validaciones de Inversión
+
+**Al crear inversión:**
+- Usuario debe tener saldo suficiente (balance ≥ amount)
+- Producto debe estar disponible (`isAvailableForInvestment()`)
+- Monto debe cumplir el mínimo de inversión del producto
+- Producto no debe estar vencido (closingDate > hoy)
+- Producto debe tener cupo disponible (currentAmount + amount ≤ targetAmount)
+
+**Al cancelar inversión:**
+- Solo inversiones con estado `ACTIVE` pueden cancelarse
+- No se pueden cancelar inversiones `COMPLETED`, `CANCELLED` o `EXPIRED`
+
+#### Actualizaciones Automáticas
+
+**Al crear inversión:**
+1. Se descuenta el monto del balance del usuario
+2. Se incrementa el `currentAmount` del producto
+3. Si `currentAmount` alcanza `targetAmount`, el producto cambia a estado `SOLD_OUT`
+
+**Al cancelar inversión:**
+1. Se calcula el rendimiento proporcional
+2. Se devuelve al usuario: capital + rendimiento proporcional
+3. Se reduce el `currentAmount` del producto
+4. Si el producto estaba `SOLD_OUT`, vuelve a `ACTIVE`
+5. Se marca la inversión como `CANCELLED` con `completionDate` = hoy
+
+#### Transacciones Atómicas
+
+Todas las operaciones financieras se ejecutan con `@Transactional` para garantizar:
+- Atomicidad: Todo se ejecuta o nada
+- Consistencia: Los datos quedan en estado válido
+- Aislamiento: Las operaciones concurrentes no interfieren
+- Durabilidad: Los cambios se persisten correctamente
+
+---
+
 ## 🔒 Seguridad
 
 ### Características Implementadas
@@ -681,9 +1036,21 @@ CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
 - ✅ CSRF deshabilitado (API REST)
 - ✅ Session management: STATELESS
 - ✅ Endpoints públicos: `/api/auth/**`, `/api/public/**`, `/health`
-- ✅ Endpoints protegidos: `/api/admin/**`
+- ✅ Endpoints protegidos: `/api/admin/**`, `/api/investments/**`
 - ✅ Validación de entrada con Bean Validation
 - ✅ Control de acceso basado en roles (RBAC)
+- ✅ Transacciones atómicas para operaciones financieras
+- ✅ Manejo de excepciones personalizado
+
+### Excepciones de Dominio
+
+El sistema implementa excepciones específicas para cada caso de negocio:
+
+- `InsufficientBalanceException` - Saldo insuficiente para invertir
+- `ProductNotAvailableException` - Producto no disponible para inversión
+- `InvestmentNotCancellableException` - Inversión no puede ser cancelada
+- `ResourceNotFoundException` - Recurso no encontrado
+- `DomainException` - Excepción base del dominio
 
 ### Buenas Prácticas
 
@@ -729,15 +1096,26 @@ CREATE INDEX idx_product_closing_date ON investment_products(closing_date);
 - Validaciones de negocio
 - Métodos de dominio: `isAvailableForInvestment()`, `getProgressPercentage()`
 
+#### ✅ Fase 5: Sistema de Inversiones
+- Entidad `Investment` con lógica de dominio
+- Enum `InvestmentStatus` (ACTIVE, COMPLETED, CANCELLED, EXPIRED)
+- Relaciones bidireccionales: User ↔ Investment ↔ InvestmentProduct
+- Repositorios y adaptadores
+- DTOs: `CreateInvestmentRequest`, `InvestmentResponse`
+- Casos de uso de inversión (crear, consultar, cancelar)
+- Validación de saldo del usuario
+- Validación de disponibilidad del producto
+- Actualización automática de balances (user.balance y product.currentAmount)
+- Cálculo de rendimientos esperados (`calculateExpectedReturn()`)
+- Cancelación con rendimiento proporcional (`calculateProportionalReturn()`)
+- Endpoints protegidos (`/api/investments/*`)
+- Métodos de dominio: `canBeCancelled()`, gestión de estado del producto (SOLD_OUT)
+- Transacciones atómicas con `@Transactional`
+- Excepciones de dominio personalizadas
+
 ---
 
 ## 🚧 Roadmap
-
-### Fase 5: Sistema de Inversiones
-- Entidad `Investment`
-- Lógica de inversión (crear, cancelar)
-- Validación de saldo
-- Cálculo de rendimientos
 
 ### Fase 6: Transacciones y Balance
 - Entidad `Transaction`
@@ -792,6 +1170,60 @@ docker exec -it nexusfinance-postgres psql -U postgres -d nexusfinance_db
 ### Conectar a Redis
 ```bash
 docker exec -it nexusfinance-redis redis-cli
+```
+
+### Consultas SQL Útiles
+
+```sql
+-- Ver todos los usuarios con sus balances
+SELECT id, first_name, last_name, email, balance, created_at 
+FROM users 
+ORDER BY created_at DESC;
+
+-- Ver productos de inversión con su progreso
+SELECT 
+    id, 
+    name, 
+    status, 
+    risk_level,
+    annual_return,
+    current_amount,
+    target_amount,
+    ROUND((current_amount / target_amount * 100), 2) as progress_percentage,
+    closing_date
+FROM investment_products 
+ORDER BY created_at DESC;
+
+-- Ver inversiones con información del usuario y producto
+SELECT 
+    i.id,
+    u.email as investor_email,
+    p.name as product_name,
+    i.amount,
+    i.expected_return,
+    i.actual_return,
+    i.status,
+    i.start_date,
+    i.maturity_date,
+    i.completion_date
+FROM investments i
+JOIN users u ON i.user_id = u.id
+JOIN investment_products p ON i.product_id = p.id
+ORDER BY i.created_at DESC;
+
+-- Ver total invertido por usuario
+SELECT 
+    u.email,
+    COUNT(i.id) as total_investments,
+    SUM(i.amount) as total_invested,
+    SUM(CASE WHEN i.status = 'ACTIVE' THEN i.amount ELSE 0 END) as active_amount
+FROM users u
+LEFT JOIN investments i ON u.id = i.user_id
+GROUP BY u.email
+ORDER BY total_invested DESC;
+
+-- Actualizar balance de un usuario (para testing)
+UPDATE users SET balance = 50000.00 WHERE email = 'juan@example.com';
 ```
 
 ---
@@ -853,7 +1285,9 @@ Este proyecto está bajo la Licencia MIT.
 
 ## 👨‍💻 Autor
 
-Norberto Velez
+**Norberto Velez**
+
+Desarrollado con ❤️ utilizando Clean Architecture, DDD y principios SOLID.
 
 ---
 
